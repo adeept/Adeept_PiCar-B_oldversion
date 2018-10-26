@@ -1,0 +1,16 @@
+E_C1:425
+E_C2:310
+E_M1:100
+E_M2:100
+E_T1:30
+E_T2:30
+O_CV:0
+turn_right_max:280
+turn_left_max:500
+turn_middle:370
+look_up_max:662
+look_down_max:295
+look_right_max:140
+look_left_max:476
+look_turn_speed:13
+ip_con:192.168.12.1
