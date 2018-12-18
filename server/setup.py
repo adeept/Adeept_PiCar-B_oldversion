@@ -153,11 +153,11 @@ for x in range(1,4):
 try:
 	os.system('sudo mknod("//home/pi/.config/autostart/car.desktop")')
 	with open("//home/pi/.config/autostart/car.desktop",'w') as file_to_write:
-		file_to_write.write("[Desktop Entry]\n   Name=Car\n   Comment=Car\n   Exec=sudo python3 //home/pi/Adeept_PiCar-B/server/server.py\n   Icon=false\n   Terminal=false\n   MutipleArgs=false\n   Type=Application\n   Catagories=Application;Development;\n   StartupNotify=true")
+		file_to_write.write("[Desktop Entry]\n   Name=Car\n   Comment=Car\n   Exec=sudo python3 //home/pi/adeept_picar-b/server/server.py\n   Icon=false\n   Terminal=false\n   MutipleArgs=false\n   Type=Application\n   Catagories=Application;Development;\n   StartupNotify=true")
 except:
 	pass
 
-os.system("sudo cp -f //home/pi/Adeept_PiCar-B/server/set.txt /home/pi/set.txt")
+os.system("sudo cp -f //home/pi/adeept_picar-b/server/set.txt /home/pi/set.txt")
 
 try:
 	os.system("sudo pip3 install pocketsphinx")
