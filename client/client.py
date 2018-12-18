@@ -1,12 +1,12 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+# Product     : Raspberry PiCar-B
 # File name   : client.py
 # Description : client  
 # Website     : www.adeept.com
 # E-mail      : support@adeept.com
 # Author      : William
-# Date        : 2018/08/22
-
+# Date        : 2018/12/18
 from socket import *
 import sys,subprocess
 import time
@@ -19,6 +19,16 @@ import zmq
 import base64
 import numpy as np
 
+color_bg='#000000'        #Set background color
+color_text='#E1F5FE'      #Set text color
+color_btn='#212121'       #Set button color
+color_line='#01579B'      #Set line color
+color_can='#212121'       #Set canvas color
+color_oval='#2196F3'      #Set oval color
+target_color='#FF6D00'
+
+a2t=''
+TestMode = 0
 
 stat=0          #A status value,ensure the mainloop() runs only once
 tcpClicSock=''  #A global variable,for future socket connection
@@ -47,6 +57,7 @@ speech_status   = 0
 findline_status = 0
 
 ipcon=0
+SR_mode=0
 
 def video_show():
     while True:
@@ -176,17 +187,70 @@ def call_opencv():                  #Start OpenCV mode
     else:
         tcpClicSock.send(('Stop').encode())
 
-def loop():                       #GUI
-    global tcpClicSock,BtnIP,led_status      #The value of tcpClicSock changes in the function loop(),would also changes in global so the other functions could use it.
-    while True:
-        color_bg='#000000'        #Set background color
-        color_text='#E1F5FE'      #Set text color
-        color_btn='#212121'       #Set button color
-        color_line='#01579B'      #Set line color
-        color_can='#212121'       #Set canvas color
-        color_oval='#2196F3'      #Set oval color
-        target_color='#FF6D00'
+def voice_input():
+    global a2t
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        #r.adjust_for_ambient_noise(source)
+        r.record(source,duration=2)
+        print("Say something!")
+        audio = r.listen(source)
+    try:
+        a2t=r.recognize_sphinx(audio,keyword_entries=[('forward',1.0),('backward',1.0),('left',1.0),('right',1.0),('stop',1.0),('find line',0.95),('follow',1),('lights on',1),('lights off',1)])
+        print("Sphinx thinks you said " + a2t)
+    except sr.UnknownValueError:
+        print("Sphinx could not understand audio")
+    except sr.RequestError as e:
+        print("Sphinx error; {0}".format(e))
+    BtnVIN.config(fg=color_text,bg=color_btn)
+    return a2t
 
+def voice_command_thread():
+    while 1:
+        if SR_mode == 1:
+            l_VIN.config(text='Command?')
+            v_command=voice_input()
+            if SR_mode == 1:
+                l_VIN.config(text='%s'%v_command)
+                if 'forward' in v_command:
+                    tcpClicSock.send(('forward').encode())
+                elif 'backward' in v_command:
+                    tcpClicSock.send(('backward').encode())
+                elif 'left' in v_command:
+                    tcpClicSock.send(('Left').encode())
+                elif 'right' in v_command:
+                    tcpClicSock.send(('Right').encode())
+                elif 'stop' in v_command:
+                    tcpClicSock.send(('stop').encode())
+                    tcpClicSock.send(('Stop').encode())
+                elif 'find line' in v_command:
+                    tcpClicSock.send(('findline').encode())
+                elif 'follow' in v_command:
+                    tcpClicSock.send(('auto').encode())
+                elif 'lights on' in v_command:
+                    tcpClicSock.send(('lightsON').encode())
+                elif 'lights off' in v_command:
+                    tcpClicSock.send(('lightsOFF').encode())
+                else:
+                    pass
+            else:
+                pass
+        else:
+            time.sleep(0.2)
+
+def voice_command(event):
+    global SR_mode
+    if SR_mode == 0:
+        SR_mode = 1
+        BtnVIN.config(fg='#0277BD',bg='#BBDEFB')
+    else:
+        BtnVIN.config(fg=color_text,bg=color_btn)
+        SR_mode = 0
+
+
+def loop():                       #GUI
+    global tcpClicSock,BtnIP,led_status,BtnVIN,l_VIN,TestMode     #The value of tcpClicSock changes in the function loop(),would also changes in global so the other functions could use it.
+    while True:
         root = tk.Tk()            #Define a window named root
         root.title('Adeept')      #Main window title
         root.geometry('917x630')  #Main window size, middle of the English letter x.
@@ -263,50 +327,6 @@ def loop():                       #GUI
         can_tex_11=can_scan.create_text((27,178),text='%sm'%round((x_range/4),2),fill='#aeea00')     #Create a text on canvas
         can_tex_12=can_scan.create_text((27,116),text='%sm'%round((x_range/2),2),fill='#aeea00')     #Create a text on canvas
         can_tex_13=can_scan.create_text((27,54),text='%sm'%round((x_range*0.75),2),fill='#aeea00')  #Create a text on canvas
-        def voice_input():
-            global a2t
-            r = sr.Recognizer()
-            with sr.Microphone() as source:
-                #r.adjust_for_ambient_noise(source)
-                r.record(source,duration=2)
-                print("Say something!")
-                audio = r.listen(source)
-            try:
-                a2t=r.recognize_sphinx(audio,keyword_entries=[('forward',1.0),('backward',1.0),('left',1.0),('right',1.0),('stop',1.0),('find line',0.95),('follow',1),('lights on',1),('lights off',1)])
-                print("Sphinx thinks you said " + a2t)
-            except sr.UnknownValueError:
-                print("Sphinx could not understand audio")
-            except sr.RequestError as e:
-                print("Sphinx error; {0}".format(e))
-            BtnVIN.config(fg=color_text,bg=color_btn)
-            return a2t
-
-        def voice_command(event):
-            l_VIN.config(text='Command?')
-            BtnVIN.config(fg='#0277BD',bg='#BBDEFB')
-            v_command=voice_input()
-            l_VIN.config(text='%s'%v_command)
-            if 'forward' in v_command:
-                tcpClicSock.send(('forward').encode())
-            elif 'backward' in v_command:
-                tcpClicSock.send(('backward').encode())
-            elif 'left' in v_command:
-                tcpClicSock.send(('Left').encode())
-            elif 'right' in v_command:
-                tcpClicSock.send(('Right').encode())
-            elif 'stop' in v_command:
-                tcpClicSock.send(('stop').encode())
-                tcpClicSock.send(('Stop').encode())
-            elif 'find line' in v_command:
-                tcpClicSock.send(('findline').encode())
-            elif 'follow' in v_command:
-                tcpClicSock.send(('auto').encode())
-            elif 'lights on' in v_command:
-                tcpClicSock.send(('lightsON').encode())
-            elif 'lights off' in v_command:
-                tcpClicSock.send(('lightsOFF').encode())
-            else:
-                pass
 
         def spd_set():                 #Call this function for speed adjustment
             tcpClicSock.send(('spdset:%s'%var_spd.get()).encode())   #Get a speed value from IntVar and send it to the car
@@ -381,6 +401,10 @@ def loop():                       #GUI
                         at=thread.Thread(target=code_receive) #Define a thread for data receiving
                         at.setDaemon(True)                    #'True' means it is a front thread,it would close when the mainloop() closes
                         at.start()                            #Thread starts
+
+                        SR_threading=thread.Thread(target=voice_command_thread)         #Define a thread for ultrasonic tracking
+                        SR_threading.setDaemon(True)                              #'True' means it is a front thread,it would close when the mainloop() closes
+                        SR_threading.start()                                      #Thread starts
 
                         video_thread=thread.Thread(target=video_show) #Define a thread for data receiving
                         video_thread.setDaemon(True)                    #'True' means it is a front thread,it would close when the mainloop() closes
@@ -533,14 +557,16 @@ def loop():                       #GUI
                     l_ip.config(text='Lights OFF')        #Put the text on the label
 
                 elif 'oncvon' in str(code_car):
-                    BtnOCV.config(text='OpenCV ON',fg='#0277BD',bg='#BBDEFB')
-                    BtnFL.config(text='Find Line',fg=color_text,bg=color_btn)
-                    l_ip.config(text='OpenCV ON')
-                    opencv_status = 1
+                    if TestMode == 0:
+                        BtnOCV.config(text='OpenCV ON',fg='#0277BD',bg='#BBDEFB')
+                        BtnFL.config(text='Find Line',fg=color_text,bg=color_btn)
+                        l_ip.config(text='OpenCV ON')
+                        opencv_status = 1
 
                 elif 'auto_status_off' in str(code_car):
-                    BtnSR3.config(fg=color_text,bg=color_btn,state='normal')
-                    BtnOCV.config(text='OpenCV',fg=color_text,bg=color_btn,state='normal')
+                    if TestMode == 0:
+                        BtnSR3.config(fg=color_text,bg=color_btn,state='normal')
+                        BtnOCV.config(text='OpenCV',fg=color_text,bg=color_btn,state='normal')
                     BtnFL.config(text='Find Line',fg=color_text,bg=color_btn)
                     Btn5.config(text='Follow',fg=color_text,bg=color_btn,state='normal')
                     findline_status = 0
@@ -550,10 +576,15 @@ def loop():                       #GUI
 
                 elif 'voice_3' in str(code_car):
                     BtnSR3.config(fg='#0277BD',bg='#BBDEFB')
-                    BtnSR1.config(state='disabled')
-                    BtnSR2.config(state='disabled')
+                    #BtnSR1.config(state='disabled')
+                    #BtnSR2.config(state='disabled')
                     l_ip.config(text='Sphinx SR')        #Put the text on the label
                     speech_status = 1
+
+                elif 'TestVersion' in str(code_car):
+                    TestMode = 1
+                    BtnSR3.config(fg='#FFFFFF',bg='#F44336')
+                    BtnOCV.config(fg='#FFFFFF',bg='#F44336')
 
         s1 = tk.Scale(root,label="               < Slow   Speed Adjustment   Fast >",
         from_=0.4,to=1,orient=tk.HORIZONTAL,length=400,
