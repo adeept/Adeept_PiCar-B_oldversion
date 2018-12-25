@@ -54,7 +54,10 @@ def setup():
     GPIO.setup(line_pin_right,GPIO.IN)
     GPIO.setup(line_pin_middle,GPIO.IN)
     GPIO.setup(line_pin_left,GPIO.IN)
-    motor.setup()
+    try:
+        motor.setup()
+    except:
+        pass
 
 def run():
     status_right = GPIO.input(line_pin_right)
