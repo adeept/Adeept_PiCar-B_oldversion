@@ -59,7 +59,10 @@ v_command=''
 
 def setup():
     GPIO.setwarnings(False)
-    motor.setup()
+    try:
+        motor.setup()
+    except:
+        pass
 
 
 def run():
