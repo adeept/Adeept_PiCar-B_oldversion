@@ -174,6 +174,8 @@ def run():                   #Main loop
     auto_threading=threading.Thread(target=auto_thread)         #Define a thread for ultrasonic tracking
     auto_threading.setDaemon(True)                              #'True' means it is a front thread,it would close when the mainloop() closes
     auto_threading.start()                                      #Thread starts
+    
+    time.sleep(0.5)
 
     tcpCliSock.send('TestVersion'.encode())
 
