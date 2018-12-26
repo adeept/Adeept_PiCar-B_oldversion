@@ -35,8 +35,11 @@ def setup():#Motor initialization
 	GPIO.setup(Motor_A_Pin2, GPIO.OUT)
 	GPIO.setup(Motor_B_Pin1, GPIO.OUT)
 	GPIO.setup(Motor_B_Pin2, GPIO.OUT)
-	pwm_A = GPIO.PWM(Motor_A_EN, 1000)
-	pwm_B = GPIO.PWM(Motor_B_EN, 1000)
+	try:
+		pwm_A = GPIO.PWM(Motor_A_EN, 1000)
+		pwm_B = GPIO.PWM(Motor_B_EN, 1000)
+	except:
+		pass
 
 def motorStop():#Motor stops
 	GPIO.output(Motor_A_Pin1, GPIO.LOW)
