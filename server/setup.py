@@ -142,7 +142,7 @@ for x in range(1,4):
 		break
 
 try:
-	os.system("sudo cd create_ap && sudo make install")
+	os.system("sudo cd //home/pi/adeept_picar-b/server/create_ap && sudo make install")
 except:
 	pass
 
