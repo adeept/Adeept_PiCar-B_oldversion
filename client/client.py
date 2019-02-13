@@ -428,7 +428,7 @@ def loop():                       #GUI
                 l_ip_4.config(bg='#F44336')
 
         def code_receive():     #A function for data receiving
-            global led_status,ipcon,findline_status,auto_status,opencv_status,speech_status
+            global led_status,ipcon,findline_status,auto_status,opencv_status,speech_status,TestMode
             while True:
                 code_car = tcpClicSock.recv(BUFSIZ) #Listening,and save the data in 'code_car'
                 l_ip.config(text=code_car)          #Put the data on the label
