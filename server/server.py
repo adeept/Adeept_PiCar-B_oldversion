@@ -190,6 +190,23 @@ def scan():                  #Ultrasonic Scanning
     turn.ultra_turn(hoz_mid)   #Ultrasonic point forward
     return dis_dir
 
+def scan_rev():                  #Ultrasonic Scanning
+    global dis_dir
+    dis_dir = []
+    turn.ultra_turn(hoz_mid)   #Ultrasonic point forward
+    turn.ultra_turn(look_right_max)   #Ultrasonic point Left,prepare to scan
+    dis_dir=['list']         #Make a mark so that the client would know it is a list
+    time.sleep(0.5)          #Wait for the Ultrasonic to be in position
+    cat_2=look_right_max                #Value of left-position
+    GPIO.setwarnings(False)  #Or it may print warnings
+    while cat_2<look_left_max:         #Scan,from left to right
+        turn.ultra_turn(cat_2)
+        cat_2 += 3           #This value determine the speed of scanning,the greater the faster
+        new_scan_data=round(ultra.checkdist(),2)   #Get a distance of a certern direction
+        dis_dir.append(str(new_scan_data))              #Put that distance value into a list,and save it as String-Type for future transmission 
+    turn.ultra_turn(hoz_mid)   #Ultrasonic point forward
+    return dis_dir
+
 def ultra_turn(hoz_mid):     #Control the direction of ultrasonic
     pwm.set_pwm(1, 0, hoz_mid)
 
@@ -478,6 +495,14 @@ def run():                   #Main loop
 
         elif 'scan' in data:
             dis_can=scan()                     #Start Scanning
+            str_list_1=dis_can                 #Divide the list to make it samller to send 
+            str_index=' '                      #Separate the values by space
+            str_send_1=str_index.join(str_list_1)+' '
+            tcpCliSock.sendall((str(str_send_1)).encode())   #Send Data
+            tcpCliSock.send('finished'.encode())        #Sending 'finished' tell the client to stop receiving the list of dis_can
+
+        elif 'scan_rev' in data:
+            dis_can=scan_rev()                     #Start Scanning
             str_list_1=dis_can                 #Divide the list to make it samller to send 
             str_index=' '                      #Separate the values by space
             str_send_1=str_index.join(str_list_1)+' '
