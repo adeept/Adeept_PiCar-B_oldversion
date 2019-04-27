@@ -33,6 +33,10 @@ for x in range(1,4):
 		break
 
 for x in range(1,4):
+	if os.system("sudo pip3 install pip setuptools wheel") == 0:
+		break
+		
+for x in range(1,4):
 	if os.system("sudo pip3 install adafruit-pca9685") == 0:
 		break
 
@@ -42,10 +46,6 @@ try:
 	#replace_num("/boot/config.txt",'#dtparam=i2s=on','dtparam=i2s=on')
 except:
 	print('try again')
-
-for x in range(1,4):
-	if os.system("sudo pip3 install pip setuptools wheel") == 0:
-		break
 
 for x in range(1,4):
 	if os.system("sudo apt-get install -y swig") == 0:
@@ -142,7 +142,12 @@ for x in range(1,4):
 		break
 
 try:
-	os.system("sudo cd //home/pi/adeept_picar-b/server/create_ap && sudo make install")
+	os.system("cd //home/pi/adeept_picar-b/server/create_ap && sudo make install")
+except:
+	pass
+
+try:
+	os.system("cd //home/pi/create_ap && sudo make install")
 except:
 	pass
 
