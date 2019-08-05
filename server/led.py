@@ -30,7 +30,7 @@ def both_on():
 
 def setup():#initialization
     GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BOARD)
+    GPIO.setmode(GPIO.BCM)
     GPIO.setup(left_R, GPIO.OUT)
     GPIO.setup(left_G, GPIO.OUT)
     GPIO.setup(left_B, GPIO.OUT)
