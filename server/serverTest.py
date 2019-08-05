@@ -26,13 +26,13 @@ distance_stay  = 0.4
 distance_range = 2
 led_status = 0
 
-left_R = 15
-left_G = 16
-left_B = 18
+left_R = 22
+left_G = 23
+left_B = 24
 
-right_R = 19
-right_G = 21
-right_B = 22
+right_R = 10
+right_G = 9
+right_B = 25
 
 spd_ad     = 1          #Speed Adjustment
 pwm0       = 0          #Camera direction 
