@@ -30,17 +30,17 @@ right_spd  = num_import_int('E_M2:')         #Speed of the car
 left       = num_import_int('E_T1:')         #Motor Left
 right      = num_import_int('E_T2:')         #Motor Right
 
-line_pin_right = 35
-line_pin_middle = 36
-line_pin_left = 38
+line_pin_right = 19
+line_pin_middle = 16
+line_pin_left = 20
 
-left_R = 15
-left_G = 16
-left_B = 18
+left_R = 22
+left_G = 23
+left_B = 24
 
-right_R = 19
-right_G = 21
-right_B = 22
+right_R = 10
+right_G = 9
+right_B = 25
 
 on  = GPIO.LOW
 off = GPIO.HIGH
@@ -50,7 +50,7 @@ spd_ad_2 = 1
 
 def setup():
     GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BOARD)
+    GPIO.setmode(GPIO.BCM)
     GPIO.setup(line_pin_right,GPIO.IN)
     GPIO.setup(line_pin_middle,GPIO.IN)
     GPIO.setup(line_pin_left,GPIO.IN)
