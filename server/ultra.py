@@ -21,13 +21,13 @@ def num_import_int(initial):       #Call this function to import data from '.txt
     return n
 
 #Set GPIO for Leds
-left_R = 29
-left_G = 31
-left_B = 33
+left_R = 22
+left_G = 23
+left_B = 24
 
-right_R = 16
-right_G = 18
-right_B = 15
+right_R = 10
+right_G = 9
+right_B = 25
 
 #Set for motors
 left_spd   = num_import_int('E_M1:')         #Speed of the car
@@ -40,11 +40,11 @@ status   = 1
 forward  = 0
 backward = 1
 spd_ad_u   = 1
-Tr = 23
-Ec = 24
+Tr = 11
+Ec = 8
 
 def checkdist():       #Reading distance
-    GPIO.setmode(GPIO.BOARD)
+    GPIO.setmode(GPIO.BCM)
     GPIO.setup(Tr, GPIO.OUT,initial=GPIO.LOW)
     GPIO.setup(Ec, GPIO.IN)
     GPIO.output(Tr, GPIO.HIGH)
