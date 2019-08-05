@@ -41,13 +41,13 @@ right_spd  = num_import_int('E_M2:')         #Speed of the car
 left       = num_import_int('E_T1:')         #Motor Left
 right      = num_import_int('E_T2:')         #Motor Right
 
-left_R = 15
-left_G = 16
-left_B = 18
+left_R = 22
+left_G = 23
+left_B = 24
 
-right_R = 19
-right_G = 21
-right_B = 22
+right_R = 10
+right_G = 9
+right_B = 25
 
 on  = GPIO.LOW
 off = GPIO.HIGH
