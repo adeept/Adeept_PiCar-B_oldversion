@@ -34,6 +34,8 @@ path_get=path_get[:-15]
 
 try:
 	os.system('sudo rm //home/pi/startup.sh')
+except:
+	pass
 
 try:
 	os.system('sudo touch //home/pi/startup.sh')
