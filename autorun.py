@@ -30,7 +30,7 @@ def replace_num(file,initial,new_num):
         f.writelines(newline)
 
 path_get = str(search('//home/pi/','server.py'))
-path_get=path_get[:-15]
+path_get=path_get[:-2]
 
 try:
 	os.system('sudo rm //home/pi/startup.sh')
