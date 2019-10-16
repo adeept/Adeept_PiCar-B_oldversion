@@ -171,7 +171,7 @@ except:
 try:
 	os.system('sudo touch //home/pi/startup.sh')
 	with open("//home/pi/startup.sh",'w') as file_to_write:
-		file_to_write.write("#!/bin/sh\nsleep 10s\nsudo python3 //home/pi/gtank/server/server.py")
+		file_to_write.write("#!/bin/sh\nsleep 10s\nsudo python3 //home/pi/adeept_picar-b/server/server.py")
 except:
 	pass
 
