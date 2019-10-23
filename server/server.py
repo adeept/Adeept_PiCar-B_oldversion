@@ -82,7 +82,7 @@ dis_scan = 1
 def replace_num(initial,new_num):   #Call this function to replace data in '.txt' file
     newline=""
     str_num=str(new_num)
-    with open("set.txt","r") as f:
+    with open("//etc/set.txt","r") as f:
         for line in f.readlines():
             if(line.find(initial) == 0):
                 line = initial+"%s" %(str_num+"\n")
@@ -91,7 +91,7 @@ def replace_num(initial,new_num):   #Call this function to replace data in '.txt
         f.writelines(newline)
 
 def num_import_int(initial):        #Call this function to import data from '.txt' file
-    with open("set.txt") as f:
+    with open("//etc/set.txt") as f:
         for line in f.readlines():
             if(line.find(initial) == 0):
                 r=line
