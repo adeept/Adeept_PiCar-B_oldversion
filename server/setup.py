@@ -162,7 +162,7 @@ except:
 	pass
 '''
 os.system("sudo cp -f //home/pi/adeept_picar-b/server/set.txt /home/pi/set.txt")
-
+os.system("sudo cp -f //home/pi/adeept_picar-b/server/set.txt //etc/set.txt")
 try:
 	os.system("sudo pip3 install pocketsphinx")
 except:
