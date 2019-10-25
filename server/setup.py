@@ -179,6 +179,7 @@ os.system('sudo chmod 777 //home/pi/startup.sh')
 
 replace_num('/etc/rc.local','fi','fi\n//home/pi/startup.sh start')
 os.system("sudo cp -f //home/pi/adeept_picar-b/server/set.txt //etc/set.txt")
+os.system("sudo cp -f //home/pi/adeept_picar-b/server/set.txt //set.txt")
 print('restarting')
 
 os.system("sudo reboot")
