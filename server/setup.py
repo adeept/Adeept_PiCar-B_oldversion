@@ -51,6 +51,28 @@ for x in range(1,4):
 		break
 
 for x in range(1,4):
+	if os.system("sudo apt-get install -y bison libasound2-dev swig") == 0:
+		break
+
+for x in range(1,4):
+	if os.system("sudo apt-get install -y pulseaudio libpulse-dev") == 0:
+		break
+
+for x in range(1,4):
+	if os.system("sudo apt-get install -y portaudio19-dev python3-all-dev python3-pyaudio") == 0:
+		break
+
+for x in range(1,4):
+	if os.system("sudo apt-get install -qq python3 python3-dev python3-pip build-essential swig libpulse-dev") == 0:
+		break
+
+for x in range(1,4):
+	if os.system("sudo apt-get install -y gcc libffi-dev libssl-dev python3-dev") == 0:
+		break
+
+		
+
+for x in range(1,4):
 	if os.system("sudo apt-get install -y portaudio19-dev python3-all-dev python3-pyaudio") == 0:
 		break
 
