@@ -16,6 +16,7 @@ class RobotViewSet(viewsets.ViewSet):
         serializer = MoveCommandSerializer(data=request.data)
         if serializer.is_valid():
             motor.move(serializer.data['direction'], serializer.data['speed'])
+            return Response({'status': 'OK'})
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
