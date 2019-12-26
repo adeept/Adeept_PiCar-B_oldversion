@@ -20,7 +20,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register(r'users', views.RobotViewSet, basename='user')
+router.register(r'robot', views.RobotViewSet, basename='user')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

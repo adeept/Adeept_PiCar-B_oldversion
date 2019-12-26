@@ -8,7 +8,8 @@ verify_ssl = true
 [packages]
 django = "*"
 djangorestframework = "*"
-python-rpi-gpio = "*"
+rpi-ws281x = "*"
+rpi-gpio = "*"
 
 [requires]
 python_version = "3.7"
