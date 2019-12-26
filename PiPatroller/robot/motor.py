@@ -41,6 +41,7 @@ def setup():#Motor initialization
 	except:
 		pass
 
+
 def motorStop():#Motor stops
 	GPIO.output(Motor_A_Pin1, GPIO.LOW)
 	GPIO.output(Motor_A_Pin2, GPIO.LOW)
@@ -48,6 +49,7 @@ def motorStop():#Motor stops
 	GPIO.output(Motor_B_Pin2, GPIO.LOW)
 	GPIO.output(Motor_A_EN, GPIO.LOW)
 	GPIO.output(Motor_B_EN, GPIO.LOW)
+
 
 def motor_right(status, direction, speed):#Motor 2 positive and negative rotation
 	global  pwm_B
@@ -64,22 +66,22 @@ def motor_right(status, direction, speed):#Motor 2 positive and negative rotatio
 			GPIO.output(Motor_B_Pin2, GPIO.HIGH)
 			pwm_B.start(0)
 			pwm_B.ChangeDutyCycle(speed)
-def motor_left(status, direction, speed):#Motor 1 positive and negative rotation
+
+
+def move(direction, speed):#Motor 1 positive and negative rotation
 	global pwm_A
-	if status == 0: # stop
+	if direction == 'S':  # stop
 		motorStop()
-	else:
-		if direction == Dir_forward:#
-			GPIO.output(Motor_A_Pin1, GPIO.HIGH)
-			GPIO.output(Motor_A_Pin2, GPIO.LOW)
-			pwm_A.start(100)
-			pwm_A.ChangeDutyCycle(speed)
-		elif direction == Dir_backward:
-			GPIO.output(Motor_A_Pin1, GPIO.LOW)
-			GPIO.output(Motor_A_Pin2, GPIO.HIGH)
-			pwm_A.start(0)
-			pwm_A.ChangeDutyCycle(speed)
-	return direction
+	if direction == 'F':
+		GPIO.output(Motor_A_Pin1, GPIO.HIGH)
+		GPIO.output(Motor_A_Pin2, GPIO.LOW)
+		pwm_A.start(100)
+		pwm_A.ChangeDutyCycle(speed)
+	elif direction == 'B':
+		GPIO.output(Motor_A_Pin1, GPIO.LOW)
+		GPIO.output(Motor_A_Pin2, GPIO.HIGH)
+		pwm_A.start(0)
+		pwm_A.ChangeDutyCycle(speed)
 
 
 def destroy():

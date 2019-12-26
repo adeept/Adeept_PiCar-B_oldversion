@@ -1,3 +1,20 @@
-from django.shortcuts import render
+import robot.motor as motor
+from robot.serializers import MoveCommandSerializer
 
-# Create your views here.
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+
+# Initialization
+motor.setup()
+
+
+class RobotViewSet(viewsets.ViewSet):
+
+    @action(detail=False, methods=['post'])
+    def move(self, request):
+        serializer = MoveCommandSerializer(data=request.data)
+        if serializer.is_valid():
+            motor.move(serializer.data['direction'], serializer.data['speed'])
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
