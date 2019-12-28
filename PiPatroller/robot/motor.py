@@ -7,91 +7,49 @@
 # Date        : 2018/10/12
 
 import RPi.GPIO as GPIO
-import time
+
+
 # motor_EN_A: Pin7  |  motor_EN_B: Pin11
 # motor_A:  Pin8,Pin10    |  motor_B: Pin13,Pin12
 
-Motor_A_EN    = 4
-Motor_B_EN    = 17
 
-Motor_A_Pin1  = 14
-Motor_A_Pin2  = 15
-Motor_B_Pin1  = 27
-Motor_B_Pin2  = 18
+class Motor:
+	EN = 17
+	Pin1 = 27
+	Pin2 = 18
+	PWM = 0
 
-Dir_forward   = 0
-Dir_backward  = 1
+	@staticmethod
+	def setup():  # Motor initialization
+		GPIO.setwarnings(False)
+		GPIO.setmode(GPIO.BCM)
+		GPIO.setup(Motor.EN, GPIO.OUT)
+		GPIO.setup(Motor.Pin1, GPIO.OUT)
+		GPIO.setup(Motor.Pin2, GPIO.OUT)
+		try:
+			Motor.PWM = GPIO.PWM(Motor.EN, 1000)
+		except:
+			pass
+		Motor.stop()
 
-pwm_A = 0
-pwm_B = 0
+	@staticmethod
+	def stop():  # Motor stops
+		GPIO.output(Motor.Pin1, GPIO.LOW)
+		GPIO.output(Motor.Pin2, GPIO.LOW)
+		GPIO.output(Motor.EN, GPIO.LOW)
 
-def setup():#Motor initialization
-	global pwm_A, pwm_B
-	GPIO.setwarnings(False)
-	GPIO.setmode(GPIO.BCM)
-	GPIO.setup(Motor_A_EN, GPIO.OUT)
-	GPIO.setup(Motor_B_EN, GPIO.OUT)
-	GPIO.setup(Motor_A_Pin1, GPIO.OUT)
-	GPIO.setup(Motor_A_Pin2, GPIO.OUT)
-	GPIO.setup(Motor_B_Pin1, GPIO.OUT)
-	GPIO.setup(Motor_B_Pin2, GPIO.OUT)
-	try:
-		pwm_A = GPIO.PWM(Motor_A_EN, 1000)
-		pwm_B = GPIO.PWM(Motor_B_EN, 1000)
-	except:
-		pass
-
-
-def motorStop():#Motor stops
-	GPIO.output(Motor_A_Pin1, GPIO.LOW)
-	GPIO.output(Motor_A_Pin2, GPIO.LOW)
-	GPIO.output(Motor_B_Pin1, GPIO.LOW)
-	GPIO.output(Motor_B_Pin2, GPIO.LOW)
-	GPIO.output(Motor_A_EN, GPIO.LOW)
-	GPIO.output(Motor_B_EN, GPIO.LOW)
-
-
-def motor_right(status, direction, speed):#Motor 2 positive and negative rotation
-	global  pwm_B
-	if status == 0: # stop
-		motorStop()
-	else:
-		if direction == Dir_forward:
-			GPIO.output(Motor_B_Pin1, GPIO.HIGH)
-			GPIO.output(Motor_B_Pin2, GPIO.LOW)
-			pwm_B.start(100)
-			pwm_B.ChangeDutyCycle(speed)
-		elif direction == Dir_backward:
-			GPIO.output(Motor_B_Pin1, GPIO.LOW)
-			GPIO.output(Motor_B_Pin2, GPIO.HIGH)
-			pwm_B.start(0)
-			pwm_B.ChangeDutyCycle(speed)
-
-
-def move(direction, speed):#Motor 1 positive and negative rotation
-	global pwm_A
-	if direction == 'S':  # stop
-		motorStop()
-	if direction == 'F':
-		GPIO.output(Motor_A_Pin1, GPIO.HIGH)
-		GPIO.output(Motor_A_Pin2, GPIO.LOW)
-		pwm_A.start(100)
-		pwm_A.ChangeDutyCycle(speed)
-	elif direction == 'B':
-		GPIO.output(Motor_A_Pin1, GPIO.LOW)
-		GPIO.output(Motor_A_Pin2, GPIO.HIGH)
-		pwm_A.start(0)
-		pwm_A.ChangeDutyCycle(speed)
-
-
-def destroy():
-	motorStop()
-	GPIO.cleanup()             # Release resource
-
-
-try:
-	pass
-except KeyboardInterrupt:
-	destroy()
-
-
+	@staticmethod
+	def move(direction, speed):  # Motor positive and negative rotation
+		if direction == 'S':  # stop
+			Motor.stop()
+		else:
+			if direction == 'B':
+				GPIO.output(Motor.Pin1, GPIO.HIGH)
+				GPIO.output(Motor.Pin2, GPIO.LOW)
+				Motor.PWM.start(100)
+				Motor.PWM.ChangeDutyCycle(speed)
+			elif direction == 'F':
+				GPIO.output(Motor.Pin1, GPIO.LOW)
+				GPIO.output(Motor.Pin2, GPIO.HIGH)
+				Motor.PWM.start(0)
+				Motor.PWM.ChangeDutyCycle(speed)
