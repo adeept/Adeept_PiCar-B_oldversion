@@ -1,6 +1,7 @@
+from robot.camera import Camera
+from robot.led import Led
 from robot.motor import Motor
 from robot.steering import Steering
-from robot.camera import Camera
 
 from threading import Timer
 
@@ -13,6 +14,8 @@ pwm.set_pwm_freq(60)
 Motor.setup()
 Steering.setup(config={}, pwm=pwm)
 Camera.setup(config={}, pwm=pwm)
+Led.setup()
+
 
 class Controller:
     Timers = []

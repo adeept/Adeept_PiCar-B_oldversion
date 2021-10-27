@@ -13,7 +13,7 @@ import RPi.GPIO as GPIO
 # motor_A:  Pin8,Pin10    |  motor_B: Pin13,Pin12
 
 
-class Motor:
+class Motor(object):
 	EN = 17
 	Pin1 = 27
 	Pin2 = 18
