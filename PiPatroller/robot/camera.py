@@ -18,10 +18,10 @@ class Camera:
     @staticmethod
     def setup(config, pwm):
         Camera.pwm = pwm
-        Camera.x_max = config.get('x_max', 500)
-        Camera.x_mid = config.get('x_mid', 300)
-        Camera.x_min = config.get('x_min', 100)
-        Camera.y_max = config.get('y_max', 570)
+        Camera.x_max = config.get('x_max', 720)
+        Camera.x_mid = config.get('x_mid', 420)
+        Camera.x_min = config.get('x_min', 120)
+        Camera.y_max = config.get('y_max', 550)
         Camera.y_mid = config.get('y_mid', 340)
         Camera.y_min = config.get('y_min', 270)
         Camera.ahead()
