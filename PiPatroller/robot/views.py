@@ -59,12 +59,10 @@ class RobotViewSet(viewsets.ViewSet):
     def set_led_state(self, request):
         serializer = LedStateSerializer(data=request.data)
         if serializer.is_valid():
-            Controller.set_led_state(serializer.data['left_r'],
-                                     serializer.data['left_g'],
-                                     serializer.data['left_b'],
-                                     serializer.data['right_r'],
-                                     serializer.data['right_g'],
-                                     serializer.data['right_b'])
+            Controller.set_led_state(serializer.data['left_on'],
+                                     serializer.data['left_color'],
+                                     serializer.data['right_on'],
+                                     serializer.data['right_color'])
             return Response({
                 'status': 'OK',
                 'robot': Controller.serialize()

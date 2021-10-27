@@ -60,8 +60,8 @@ class Controller:
         Camera.set_position(x, y)
 
     @staticmethod
-    def set_led_state(left_r, left_g, left_b, right_r, right_g, right_b):
-        Led.set(left_r, left_g, left_b, right_r, right_g, right_b)
+    def set_led_state(left_on, left_color, right_on, right_color):
+        Led.set(left_on, left_color, right_on, right_color)
 
     @staticmethod
     def serialize():

@@ -19,6 +19,15 @@ right_B = 25
 on = GPIO.LOW
 off = GPIO.HIGH
 
+COLOR_MAP = {
+    'white': [True, True, True],
+    'red': [True, False, False],
+    'green': [False, True, False],
+    'blue': [False, False, True],
+    'cyan': [False, True, True],
+    'pink': [True, False, True],
+    'yellow': [True, True, False]
+}
 
 class Led(object):
     state = {}
@@ -34,14 +43,6 @@ class Led(object):
         GPIO.setup(right_G, GPIO.OUT)
         GPIO.setup(right_B, GPIO.OUT)
         Led.both_off()
-        Led.state = {
-            'left_r': 'off',
-            'left_g': 'off',
-            'left_b': 'off',
-            'right_r': 'off',
-            'right_g': 'off',
-            'right_b': 'off'
-        }
 
     @staticmethod
     def both_on():
@@ -52,33 +53,11 @@ class Led(object):
         GPIO.output(right_R, on)
         GPIO.output(right_G, on)
         GPIO.output(right_B, on)
-
-    @staticmethod
-    def set(left_r, left_g, left_b, right_r, right_g, right_b):
         Led.state = {
-            'left_r': left_r,
-            'left_g': left_g,
-            'left_b': left_b,
-            'right_r': right_r,
-            'right_g': right_g,
-            'right_b': right_b
-        }
-        Led._output()
-
-    @staticmethod
-    def _output():
-        GPIO.output(left_R, on if Led.state.get('left_r') == "on" else off)
-        GPIO.output(left_G, on if Led.state.get('left_g') == "on" else off)
-        GPIO.output(left_B, on if Led.state.get('left_b') == "on" else off)
-
-        GPIO.output(right_R, on if Led.state.get('right_r') == "on" else off)
-        GPIO.output(right_G, on if Led.state.get('right_g') == "on" else off)
-        GPIO.output(right_B, on if Led.state.get('right_b') == "on" else off)
-
-    @staticmethod
-    def serialize():
-        return {
-            'state': Led.state
+            'left_on': True,
+            'left_color': 'white',
+            'right_on': True,
+            'right_color': 'white'
         }
 
     @staticmethod
@@ -90,6 +69,40 @@ class Led(object):
         GPIO.output(right_R, off)
         GPIO.output(right_G, off)
         GPIO.output(right_B, off)
+        Led.state = {
+            'left_on': False,
+            'left_color': 'white',
+            'right_on': False,
+            'right_color': 'white'
+        }
+
+    @staticmethod
+    def set(left_on, left_color, right_on, right_color):
+        Led.state = {
+            'left_on': left_on,
+            'left_color': left_color,
+            'right_on': right_on,
+            'right_color': right_color,
+        }
+        Led._output()
+
+    @staticmethod
+    def _output():
+        r_on, g_on, b_on = COLOR_MAP[Led.state.get('left_color')] if Led.state.get('left_on') else [False, False, False]
+        GPIO.output(left_R, on if r_on else off)
+        GPIO.output(left_G, on if g_on else off)
+        GPIO.output(left_B, on if b_on else off)
+
+        r_on, g_on, b_on = COLOR_MAP[Led.state.get('right_color')] if Led.state.get('right_on') else [False, False, False]
+        GPIO.output(right_R, on if r_on else off)
+        GPIO.output(right_G, on if g_on else off)
+        GPIO.output(right_B, on if b_on else off)
+
+    @staticmethod
+    def serialize():
+        return {
+            'state': Led.state
+        }
 
     @staticmethod
     def police(police_time):

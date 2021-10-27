@@ -14,10 +14,17 @@ class CameraPositionSerializer(serializers.Serializer):
 
 
 class LedStateSerializer(serializers.Serializer):
-    left_r = serializers.ChoiceField(choices=['on', 'off'], default='on')
-    left_g = serializers.ChoiceField(choices=['on', 'off'], default='on')
-    left_b = serializers.ChoiceField(choices=['on', 'off'], default='on')
+    COLORS = [
+        'white',
+        'red',
+        'green',
+        'blue',
+        'cyan',
+        'pink',
+        'yellow'
+    ]
+    left_on = serializers.BooleanField(default=False)
+    left_color = serializers.ChoiceField(choices=COLORS, default='white')
 
-    right_r = serializers.ChoiceField(choices=['on', 'off'], default='on')
-    right_g = serializers.ChoiceField(choices=['on', 'off'], default='on')
-    right_b = serializers.ChoiceField(choices=['on', 'off'], default='on')
+    right_on = serializers.BooleanField(default=False)
+    right_color = serializers.ChoiceField(choices=COLORS, default='white')
