@@ -11,3 +11,13 @@ class MoveCommandSerializer(serializers.Serializer):
 class CameraPositionSerializer(serializers.Serializer):
     x = serializers.FloatField(min_value=-90.0, max_value=90.0, default=0.0)
     y = serializers.FloatField(min_value=-90.0, max_value=90.0, default=0.0)
+
+
+class LedStateSerializer(serializers.Serializer):
+    left_r = serializers.ChoiceField(choices=['on', 'off'], default='on')
+    left_g = serializers.ChoiceField(choices=['on', 'off'], default='on')
+    left_b = serializers.ChoiceField(choices=['on', 'off'], default='on')
+
+    right_r = serializers.ChoiceField(choices=['on', 'off'], default='on')
+    right_g = serializers.ChoiceField(choices=['on', 'off'], default='on')
+    right_b = serializers.ChoiceField(choices=['on', 'off'], default='on')

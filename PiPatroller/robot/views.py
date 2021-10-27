@@ -1,4 +1,4 @@
-from robot.serializers import MoveCommandSerializer, CameraPositionSerializer
+from robot.serializers import MoveCommandSerializer, CameraPositionSerializer, LedStateSerializer
 from robot.controller import Controller
 from robot.camera import Camera
 
@@ -47,6 +47,24 @@ class RobotViewSet(viewsets.ViewSet):
         if serializer.is_valid():
             Controller.set_camera_position(serializer.data['x'],
                                            serializer.data['y'])
+            return Response({
+                'status': 'OK',
+                'robot': Controller.serialize()
+                })
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'])
+    def set_led_state(self, request):
+        serializer = LedStateSerializer(data=request.data)
+        if serializer.is_valid():
+            Controller.set_led_state(serializer.data['left_r'],
+                                     serializer.data['left_g'],
+                                     serializer.data['left_b'],
+                                     serializer.data['right_r'],
+                                     serializer.data['right_g'],
+                                     serializer.data['right_b'])
             return Response({
                 'status': 'OK',
                 'robot': Controller.serialize()
