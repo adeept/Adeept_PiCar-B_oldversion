@@ -12,7 +12,7 @@ try:
 except:
     from unittest.mock import Mock
     pwm = Mock()
-    pwm.set_pwm = lambda *args : print(f"pwm.set_pwm{args}")
+    pwm.set_pwm = lambda *args : print("pwm.set_pwm{}".format(args))
 pwm.set_pwm_freq(60)
 
 # Initialization
@@ -20,7 +20,9 @@ Motor.setup()
 Steering.setup(config={}, pwm=pwm)
 Camera.setup(config={}, pwm=pwm)
 Led.setup()
-voice_engine = pyttsx3.init(debug=True)
+voice_engine = pyttsx3.init()
+voice_engine.setProperty('voice', "english_wmids")
+voice_engine.setProperty('rate', 150)
 
 class Controller:
     Timers = []
@@ -70,7 +72,6 @@ class Controller:
 
     @staticmethod
     def say(text):
-        print(f'Busy {voice_engine.isBusy()}, {voice_engine._inLoop}')
         if voice_engine._inLoop:
             voice_engine.endLoop()
         voice_engine.say(text)
