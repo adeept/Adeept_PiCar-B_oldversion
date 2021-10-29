@@ -1,15 +1,48 @@
 import io
+import sys
 import traceback
 
-try:
-    import picamera
-except:
-    import sys
-    import fake_rpi
-    sys.modules['picamera'] = fake_rpi.picamera
+if sys.platform == "darwin":  # Mac OS
+    import cv2
+else:
     import picamera
 
-class Camera:
+
+class CaptureDevice(object):
+
+    def __init__(self, resolution, framerate):
+        if sys.platform == "darwin":  # Mac OS
+            self.device = cv2.VideoCapture(0)
+            self.device.set(cv2.CAP_PROP_FPS, framerate)
+            res_x, res_y = resolution.split('x')
+            self.device.set(3, float(res_x))
+            self.device.set(4, float(res_y))
+        else:
+            self.device = picamera.PiCamera(resolution=resolution, framerate=framerate)
+
+    def capture_continuous(self, stream, format='jpeg'):
+        if sys.platform == "darwin":  # Mac OS
+            while (True):
+                ret, frame = self.device.read()
+                rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
+
+                yield cv2.imencode('.jpg', rgb)[1].tostring()
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
+        else:
+            for frame in select.device.capture_continuous(stream,
+                                                          format=format,
+                                                          use_video_port=True):
+                yield frame.getValue()
+
+    def close(self):
+        if sys.platform == "darwin":  # Mac OS
+            self.device.release()
+        else:
+            self.device.close()
+
+
+class Camera(object):
     pwm = None
     position = {}
     streaming = False
@@ -58,25 +91,23 @@ class Camera:
 
     @staticmethod
     def stream():
-        camera = picamera.PiCamera(resolution='640x480', framerate=7)
+        capture_device = CaptureDevice(resolution='640x480', framerate=7)
         stream = io.BytesIO()
         try:
             Camera.streaming = True
-            for frame in camera.capture_continuous(stream,
-                                                   format='jpeg',
-                                                   use_video_port=True):
+            for frame in capture_device.capture_continuous(stream, format='jpeg'):
                 stream.truncate()
                 stream.seek(0)
                 yield "--FRAME\r\n"
                 yield "Content-Type: image/jpeg\r\n"
-                yield "Content-Length: %i\r\n" % len(frame.getvalue())
+                yield "Content-Length: %i\r\n" % len(frame)
                 yield "\r\n"
-                yield frame.getvalue()
+                yield frame
                 yield "\r\n"
         except Exception as e:
             traceback.print_exc()
         finally:
-            camera.close()
+            capture_device.close()
             Camera.streaming = False
 
     @staticmethod
