@@ -1,7 +1,13 @@
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Slider from '@material-ui/core/Slider';
+import Switch from '@material-ui/core/Switch'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import TextField from "@material-ui/core/TextField";
 import React from 'react';
 import './App.css';
 import ButtonCross from './ButtonCross';
+import DirectionCross from "./DirectionCross";
 
 class App extends React.Component {
 
@@ -9,7 +15,13 @@ class App extends React.Component {
     super(props);
     this.state = {
         camera_position_x: 0,
-        camera_position_y: 0
+        camera_position_y: 0,
+        left_on: false,
+        left_color: 'white',
+        right_on: false,
+        right_color: 'white',
+        speed: 80,
+        duration: 0.5
     };
   }
 
@@ -18,8 +30,15 @@ class App extends React.Component {
           .then(response => response.json())
           .then(data => this.setState({
             camera_position_x: data.robot.camera.position.x,
-            camera_position_y: data.robot.camera.position.y
-          }));
+            camera_position_y: data.robot.camera.position.y,
+            left_on: data.robot.led.state.left_on,
+            left_color: data.robot.led.state.left_color,
+            right_on: data.robot.led.state.right_on,
+            right_color: data.robot.led.state.right_color
+          }))
+          .catch((error) => {
+            console.error('Error:', error);
+          });
   }
 
   cameraUp = () => {
@@ -42,6 +61,55 @@ class App extends React.Component {
     this.setCameraPosition(0, 0);
   }
 
+  updateSpeed = (event, value) => {
+    this.setState({
+        speed: value
+    })
+  }
+
+  updateDuration = (event, value) => {
+    this.setState({
+        duration: value
+    })
+  }
+
+  switchFrontLight = (event, checked) => {
+      this.setLedState (checked, this.state.left_color, checked, this.state.right_color);
+  }
+
+  switchFrontLightColor = (color) => {
+      this.setLedState (this.state.left_on, color, this.state.right_on, color);
+  }
+
+  keyPress = (e) => {
+      if(e.keyCode === 13 && e.target.value !== ""){
+         this.saySomething( e.target.value)
+          e.target.value = "";
+      }
+   }
+
+
+  saySomething (text) {
+      fetch('http://robot.local:8000/robot/say/', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: text
+        })
+      })
+      .then(response => response.json())
+      .then(data => this.setState({
+        camera_position_x: data.robot.camera.position.x,
+        camera_position_y: data.robot.camera.position.y
+      }))
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
+
   setCameraPosition (pos_x, pos_y) {
       fetch('http://robot.local:8000/robot/set_camera_position/', {
         method: 'POST',
@@ -58,7 +126,57 @@ class App extends React.Component {
       .then(data => this.setState({
         camera_position_x: data.robot.camera.position.x,
         camera_position_y: data.robot.camera.position.y
-      }));
+      }))
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
+
+  moveRobot (direction, heading) {
+      fetch('http://robot.local:8000/robot/move/', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            speed: this.state.speed,
+            direction: direction,
+            heading: heading,
+            duration: this.state.duration
+        })
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
+
+  setLedState (left_on, left_color, right_on, right_color) {
+      fetch('http://robot.local:8000/robot/set_led_state/', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            left_on: left_on,
+            left_color: left_color,
+            right_on: right_on,
+            right_color: right_color,
+        })
+      })
+      .then(response => response.json())
+      .then(data => this.setState({
+        left_on: data.robot.led.state.left_on,
+        left_color: data.robot.led.state.left_color,
+        right_on: data.robot.led.state.right_on,
+        right_color: data.robot.led.state.right_color
+      }))
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   }
 
   render() {
@@ -66,20 +184,135 @@ class App extends React.Component {
         <div className="App">
           <header className="App-header">
              <Grid container spacing={0} direction="row" justify="center" alignItems="center">
-                <Grid item xl={6} md={6} sm={6} xs={12}>
-                    <img src="http://robot.local:8000/robot/stream/" width="480" height="360" alt="camera"/>
-                </Grid>
-                <Grid item xl={6} md={6} sm={6} xs={12}>
+                <Grid item xl={2} md={2} sm={2} xs={12}>
                     <p>
                         Camera: {this.state.camera_position_x}, {this.state.camera_position_y}
                     </p>
                     <ButtonCross
-                     up_callback={this.cameraUp}
-                     down_callback={this.cameraDown}
-                     left_callback={this.cameraLeft}
-                     right_callback={this.cameraRight}
-                     center_callback={this.cameraCenter}/>
+                         up_callback={this.cameraUp}
+                         down_callback={this.cameraDown}
+                         left_callback={this.cameraLeft}
+                         right_callback={this.cameraRight}
+                         center_callback={this.cameraCenter}/>
+                    <Grid container spacing={2}>
+                        <Grid item xl={12} md={12} sm={12} xs={12}>
+                            <FormControlLabel control={<Switch onChange={this.switchFrontLight}/>} label="Front Light" />
+                        </Grid>
+                        <Grid item xl={1} md={1} sm={1} xs={1}/>
+                        <Grid item xl={10} md={10} sm={10} xs={10}>
+                            <Button
+                                style={{backgroundColor: '#FFFFFF'}}
+                                fullWidth
+                                onClick={this.switchFrontLightColor.bind(this, "white")}
+                            >
+                                W
+                            </Button>
+                        </Grid>
+                        <Grid item xl={1} md={1} sm={1} xs={1}/>
+                        <Grid item xl={3} md={3} sm={3} xs={3}>
+                            <Button
+                                style={{backgroundColor: '#FF0000'}}
+                                onClick={this.switchFrontLightColor.bind(this, "red")}
+                            >
+                                R
+                            </Button>
+                        </Grid>
+                        <Grid item xl={1} md={1} sm={1} xs={1}/>
+                        <Grid item xl={3} md={3} sm={3} xs={3}>
+                            <Button
+                                style={{backgroundColor: '#00FF00'}}
+                                onClick={this.switchFrontLightColor.bind(this, "green")}
+                            >
+                                G
+                            </Button>
+                        </Grid>
+                        <Grid item xl={1} md={1} sm={1} xs={1}/>
+                        <Grid item xl={3} md={3} sm={3} xs={3}>
+                            <Button
+                                style={{backgroundColor: '#0000FF'}}
+                                onClick={this.switchFrontLightColor.bind(this, "blue")}
+                            >
+                                B
+                            </Button>
+                        </Grid>
+                        <Grid item xl={1} md={1} sm={1} xs={1}/>
+                        <Grid item xl={3} md={3} sm={3} xs={3}>
+                            <Button
+                                style={{backgroundColor: '#00FFFF'}}
+                                onClick={this.switchFrontLightColor.bind(this, "cyan")}
+                            >
+                                C
+                            </Button>
+                        </Grid>
+                        <Grid item xl={1} md={1} sm={1} xs={1}/>
+                        <Grid item xl={3} md={3} sm={3} xs={3}>
+                            <Button
+                                style={{backgroundColor: '#FF00FF'}}
+                                onClick={this.switchFrontLightColor.bind(this, "pink")}
+                            >
+                                P
+                            </Button>
+                        </Grid>
+                        <Grid item xl={1} md={1} sm={1} xs={1}/>
+                        <Grid item xl={3} md={3} sm={3} xs={3}>
+                            <Button
+                                style={{backgroundColor: '#FFFF00'}}
+                                onClick={this.switchFrontLightColor.bind(this, "yellow")}
+                            >
+                                Y
+                            </Button>
+                        </Grid>
+                    </Grid>
                 </Grid>
+                <Grid item xl={6} md={6} sm={6} xs={12}>
+                    <img src="http://robot.local:8000/robot/stream/" width="480" height="360" alt="Camera Feed"/>
+                </Grid>
+                <Grid item xl={3} md={3} sm={3} xs={12}>
+                    <p>
+                        Speed
+                    </p>
+                    <Slider
+                        defaultValue={this.state.speed}
+                        valueLabelDisplay="on"
+                        min={0}
+                        max={100}
+                        onChange={this.updateSpeed}
+                        aria-label="Speed Slider" />
+                    <p>
+                        Duration
+                    </p>
+                    <Slider
+                        defaultValue={this.state.duration}
+                        valueLabelDisplay="on"
+                        min={0.2}
+                        max={5}
+                        step={0.1}
+                        onChange={this.updateDuration}
+                        aria-label="Duration Slider" />
+                    <DirectionCross
+                        forward_callback={this.moveRobot.bind(this, 'F', 0)}
+                        forward_slight_left_callback={this.moveRobot.bind(this, 'F', 45)}
+                        forward_left_callback={this.moveRobot.bind(this, 'F', 90)}
+                        forward_slight_right_callback={this.moveRobot.bind(this, 'F', -45)}
+                        forward_right_callback={this.moveRobot.bind(this, 'F', -90)}
+                        backward_callback={this.moveRobot.bind(this, 'B', 0)}
+                        backward_slight_left_callback={this.moveRobot.bind(this, 'B', 45)}
+                        backward_left_callback={this.moveRobot.bind(this, 'B', 90)}
+                        backward_slight_right_callback={this.moveRobot.bind(this, 'B', -45)}
+                        backward_right_callback={this.moveRobot.bind(this, 'B', -90)}
+                    />
+                    <Grid container>
+                        <Grid item xl={12} md={12} sm={12} xs={12}>
+                            <p>
+                                Say Something
+                            </p>
+                        </Grid>
+                        <Grid item xl={12} md={12} sm={12} xs={12}>
+                            <TextField onKeyDown={this.keyPress} fullWidth={true}/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xl={1} md={1} sm={1} xs={0}/>
             </Grid>
           </header>
         </div>

@@ -1,8 +1,13 @@
 import io
 import traceback
 
-import picamera
-
+try:
+    import picamera
+except:
+    import sys
+    import fake_rpi
+    sys.modules['picamera'] = fake_rpi.picamera
+    import picamera
 
 class Camera:
     pwm = None

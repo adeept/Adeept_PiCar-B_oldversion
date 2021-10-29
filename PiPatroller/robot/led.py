@@ -5,7 +5,14 @@
 # E-mail      : support@adeept.com
 # Author      : William
 # Date        : 2018/10/12
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except:
+    import sys
+    import fake_rpi
+    sys.modules['RPi'] = fake_rpi.RPi
+    sys.modules['RPi.GPIO'] = fake_rpi.RPi.GPIO
+    import RPi.GPIO as GPIO
 import time
 
 left_R = 22

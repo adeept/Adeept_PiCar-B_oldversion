@@ -1,4 +1,4 @@
-from robot.serializers import MoveCommandSerializer, CameraPositionSerializer, LedStateSerializer
+from robot.serializers import MoveCommandSerializer, CameraPositionSerializer, LedStateSerializer, TextToSpeachSerializer
 from robot.controller import Controller
 from robot.camera import Camera
 
@@ -26,7 +26,10 @@ class RobotViewSet(viewsets.ViewSet):
                             serializer.data['speed'],
                             serializer.data['heading'],
                             serializer.data['duration'])
-            return Response({'status': 'OK'})
+            return Response({
+                'status': 'OK',
+                'robot': Controller.serialize()
+                })
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
@@ -36,7 +39,10 @@ class RobotViewSet(viewsets.ViewSet):
         serializer = MoveCommandSerializer(data=request.data, many=True)
         if serializer.is_valid():
             Controller.moves(serializer.data)
-            return Response({'status': 'OK'})
+            return Response({
+                'status': 'OK',
+                'robot': Controller.serialize()
+                })
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
@@ -63,6 +69,19 @@ class RobotViewSet(viewsets.ViewSet):
                                      serializer.data['left_color'],
                                      serializer.data['right_on'],
                                      serializer.data['right_color'])
+            return Response({
+                'status': 'OK',
+                'robot': Controller.serialize()
+                })
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'])
+    def say(self, request):
+        serializer = TextToSpeachSerializer(data=request.data)
+        if serializer.is_valid():
+            Controller.say(serializer.data['text'])
             return Response({
                 'status': 'OK',
                 'robot': Controller.serialize()

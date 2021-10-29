@@ -28,3 +28,7 @@ class LedStateSerializer(serializers.Serializer):
 
     right_on = serializers.BooleanField(default=False)
     right_color = serializers.ChoiceField(choices=COLORS, default='white')
+
+
+class TextToSpeachSerializer(serializers.Serializer):
+    text = serializers.CharField()
