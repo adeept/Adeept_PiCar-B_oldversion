@@ -7,8 +7,12 @@ name = "pypi"
 django = "*"
 django-rest-framework = "*"
 django-cors-headers = "*"
-fake-rpi = {version = "*", sys_platform = "== 'darwin'"}
+fake-rpi = {version = "*",sys_platform = "== 'darwin'"}
 pyttsx3 = "*"
+#opencv-python = {version = "*",sys_platform = "== 'darwin'"}
+opencv-contrib-python = "*"
+rpi-gpio = "*"
+adafruit-pca9685 = "*"
 opencv-python = "*"
 
 [dev-packages]

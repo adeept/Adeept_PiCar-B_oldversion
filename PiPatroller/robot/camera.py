@@ -30,10 +30,10 @@ class CaptureDevice(object):
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
         else:
-            for frame in select.device.capture_continuous(stream,
-                                                          format=format,
-                                                          use_video_port=True):
-                yield frame.getValue()
+            for frame in self.device.capture_continuous(stream,
+                                                        format=format,
+                                                        use_video_port=True):
+                yield frame.getvalue()
 
     def close(self):
         if sys.platform == "darwin":  # Mac OS
