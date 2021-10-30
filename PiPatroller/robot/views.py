@@ -91,6 +91,13 @@ class RobotViewSet(viewsets.ViewSet):
                             status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['get'])
+    def voices(self, request):
+        return Response({
+            'status': 'OK',
+            'voices': Controller.get_voices()
+        })
+
+    @action(detail=False, methods=['get'])
     def stream(self, request):
         return StreamingHttpResponse(Camera.stream(),
                                      content_type="multipart/x-mixed-replace;boundary=FRAME")

@@ -73,13 +73,17 @@ class Controller:
     @staticmethod
     def say(text):
         config = Config.get_config()
-        voice_engine.setProperty('voice', config.get("voice_name", "english_wmids"))
+        voice_engine.setProperty('voice', config.get("voice_id", "english_wmids"))
         voice_engine.setProperty('rate', int(config.get("voice_rate", 150)))
         if voice_engine._inLoop:
             voice_engine.endLoop()
         voice_engine.say(text)
         voice_engine.runAndWait()
 
+    @staticmethod
+    def get_voices():
+        voices = voice_engine.getProperty('voices')
+        return [{'age': v.age, 'name': v.name, 'id': v.id, 'languages': v.languages} for v in voices]
 
     @staticmethod
     def serialize():

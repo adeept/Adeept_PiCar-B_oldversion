@@ -28,17 +28,21 @@ class App extends React.Component {
   componentDidMount() {
     fetch('http://robot.local:8000/robot/status/')
           .then(response => response.json())
-          .then(data => this.setState({
-            camera_position_x: data.robot.camera.position.x,
-            camera_position_y: data.robot.camera.position.y,
-            left_on: data.robot.led.state.left_on,
-            left_color: data.robot.led.state.left_color,
-            right_on: data.robot.led.state.right_on,
-            right_color: data.robot.led.state.right_color
-          }))
+          .then(data => this.updateState(data))
           .catch((error) => {
             console.error('Error:', error);
           });
+  }
+
+  updateState = (data) => {
+    this.setState({
+        camera_position_x: data.robot.camera.position.x,
+        camera_position_y: data.robot.camera.position.y,
+        left_on: data.robot.led.state.left_on,
+        left_color: data.robot.led.state.left_color,
+        right_on: data.robot.led.state.right_on,
+        right_color: data.robot.led.state.right_color
+     });
   }
 
   cameraUp = () => {
@@ -90,7 +94,7 @@ class App extends React.Component {
 
 
   saySomething (text) {
-      fetch('http://robot.local:8000/robot/say/', {
+      fetch('http://localhost:8000/robot/say/', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -101,10 +105,7 @@ class App extends React.Component {
         })
       })
       .then(response => response.json())
-      .then(data => this.setState({
-        camera_position_x: data.robot.camera.position.x,
-        camera_position_y: data.robot.camera.position.y
-      }))
+      .then(data => this.updateState(data))
       .catch((error) => {
         console.error('Error:', error);
       });
@@ -123,10 +124,7 @@ class App extends React.Component {
         })
       })
       .then(response => response.json())
-      .then(data => this.setState({
-        camera_position_x: data.robot.camera.position.x,
-        camera_position_y: data.robot.camera.position.y
-      }))
+      .then(data => this.updateState(data))
       .catch((error) => {
         console.error('Error:', error);
       });
@@ -147,7 +145,7 @@ class App extends React.Component {
         })
       })
       .then(response => response.json())
-      .then(data => console.log(data))
+      .then(data => this.updateState(data))
       .catch((error) => {
         console.error('Error:', error);
       });
@@ -168,12 +166,7 @@ class App extends React.Component {
         })
       })
       .then(response => response.json())
-      .then(data => this.setState({
-        left_on: data.robot.led.state.left_on,
-        left_color: data.robot.led.state.left_color,
-        right_on: data.robot.led.state.right_on,
-        right_color: data.robot.led.state.right_color
-      }))
+      .then(data => this.updateState(data))
       .catch((error) => {
         console.error('Error:', error);
       });
