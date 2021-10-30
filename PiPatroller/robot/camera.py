@@ -2,6 +2,8 @@ import io
 import sys
 import traceback
 
+from robot.models import Config
+
 if sys.platform == "darwin":  # Mac OS
     import cv2
 else:
@@ -54,14 +56,8 @@ class Camera(object):
     y_min = 0
 
     @staticmethod
-    def setup(config, pwm):
+    def setup(pwm):
         Camera.pwm = pwm
-        Camera.x_max = config.get('x_max', 720)
-        Camera.x_mid = config.get('x_mid', 420)
-        Camera.x_min = config.get('x_min', 120)
-        Camera.y_max = config.get('y_max', 550)
-        Camera.y_mid = config.get('y_mid', 340)
-        Camera.y_min = config.get('y_min', 270)
         Camera.ahead()
 
     @staticmethod
@@ -70,22 +66,31 @@ class Camera(object):
 
     @staticmethod
     def set_position(x, y):
-        Camera._set_x(x)
-        Camera._set_y(y)
+        config = Config.get_config()
+        Camera._set_x(config, x)
+        Camera._set_y(config, y)
 
     @staticmethod
-    def _set_x(pos):
-        course_x = Camera.x_max - Camera.x_mid
-        pos_x = int(Camera.x_mid + pos * (course_x / 90.0))
-        x = max(min(pos_x, Camera.x_max), Camera.x_min)
+    def _set_x(config, pos):
+        center_x = int(config.get('camera_center_x', 420))
+        max_x = int(config.get('camera_max_y', 720))
+        min_x = int(config.get('camera_min_y', 120))
+
+        course_x = max(max_x - center_x, center_x - min_x)
+        pos_x = int(center_x + pos * (course_x / 90.0))
+        x = max(min(pos_x, max_x), min_x)
         Camera.position['x'] = pos
         Camera.pwm.set_pwm(1, 0, x)
 
     @staticmethod
-    def _set_y(pos):
-        course_y = Camera.y_max - Camera.y_mid
-        pos_y = int(Camera.y_mid + pos * (course_y / 90.0))
-        y = max(min(pos_y, Camera.y_max), Camera.y_min)
+    def _set_y(config, pos):
+        center_y = int(config.get('camera_center_y', 340))
+        max_y = int(config.get('camera_max_y', 550))
+        min_y = int(config.get('camera_min_y', 270))
+
+        course_y = max(max_y - center_y, center_y - min_y)
+        pos_y = int(center_y + pos * (course_y / 90.0))
+        y = max(min(pos_y, max_y), min_y)
         Camera.position['y'] = pos
         Camera.pwm.set_pwm(0, 0, y)
 

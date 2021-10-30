@@ -1,6 +1,7 @@
 import pyttsx3
 from robot.camera import Camera
 from robot.led import Led
+from robot.models import Config
 from robot.motor import Motor
 from robot.steering import Steering
 
@@ -17,12 +18,11 @@ pwm.set_pwm_freq(60)
 
 # Initialization
 Motor.setup()
-Steering.setup(config={}, pwm=pwm)
-Camera.setup(config={}, pwm=pwm)
+Steering.setup(pwm=pwm)
+Camera.setup(pwm=pwm)
 Led.setup()
+Led.police(1)
 voice_engine = pyttsx3.init()
-voice_engine.setProperty('voice', "english_wmids")
-voice_engine.setProperty('rate', 150)
 
 class Controller:
     Timers = []
@@ -72,6 +72,9 @@ class Controller:
 
     @staticmethod
     def say(text):
+        config = Config.get_config()
+        voice_engine.setProperty('voice', config.get("voice_name", "english_wmids"))
+        voice_engine.setProperty('rate', int(config.get("voice_rate", 150)))
         if voice_engine._inLoop:
             voice_engine.endLoop()
         voice_engine.say(text)

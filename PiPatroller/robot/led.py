@@ -115,63 +115,19 @@ class Led(object):
     def police(police_time):
         for i in range(1, police_time):
             for j in range(1, 3):
-                Led.side_on(left_R)
-                Led.side_on(right_B)
+                Led.set(left_on=True, left_color='red', right_on=True, right_color="blue")
                 time.sleep(0.1)
                 Led.both_off()
-                Led.side_on(left_B)
-                Led.side_on(right_R)
+                Led.set(left_on=True, left_color='blue', right_on=True, right_color="red")
                 time.sleep(0.1)
                 Led.both_off()
             for j in range(1, 5):
-                Led.side_on(left_R)
-                Led.side_on(right_B)
+                Led.set(left_on=True, left_color='red', right_on=True, right_color="blue")
                 time.sleep(0.3)
                 Led.both_off()
-                Led.side_on(left_B)
-                Led.side_on(right_R)
+                Led.set(left_on=True, left_color='blue', right_on=True, right_color="red")
                 time.sleep(0.3)
                 Led.both_off()
-
-    @staticmethod
-    def red():
-        Led.side_on(right_R)
-        Led.side_on(left_R)
-
-    @staticmethod
-    def green():
-        Led.side_on(right_G)
-        Led.side_on(left_G)
-
-    @staticmethod
-    def blue():
-        Led.side_on(right_B)
-        Led.side_on(left_B)
-
-    @staticmethod
-    def yellow():
-        Led.red()
-        Led.green()
-
-    @staticmethod
-    def pink():
-        Led.red()
-        Led.blue()
-
-    @staticmethod
-    def cyan():
-        Led.blue()
-        Led.green()
-
-    @staticmethod
-    def side_color_on(side_x, side_y):
-        GPIO.output(side_x, on)
-        GPIO.output(side_y, on)
-
-    @staticmethod
-    def side_color_off(side_x, side_y):
-        GPIO.output(side_x, off)
-        GPIO.output(side_y, off)
 
     @staticmethod
     def turn_left(times):
