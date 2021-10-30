@@ -113,7 +113,7 @@ class Led(object):
 
     @staticmethod
     def police(police_time):
-        for i in range(1, police_time):
+        for i in range(0, police_time):
             for j in range(1, 3):
                 Led.set(left_on=True, left_color='red', right_on=True, right_color="blue")
                 time.sleep(0.1)
