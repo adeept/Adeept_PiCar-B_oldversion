@@ -18,8 +18,11 @@ class Config(models.Model):
     @staticmethod
     def get_config():
         config = {}
-        for o in Config.objects.all():
-            config[o.key] = o.value
+        try:
+            for o in Config.objects.all():
+                config[o.key] = o.value
+        except:
+            pass
         return config
 
     def __str__(self):
