@@ -1,9 +1,12 @@
+import time
+
 import pyttsx3
 from robot.camera import Camera
 from robot.led import Led
 from robot.models import Config
 from robot.motor import Motor
 from robot.steering import Steering
+from robot.ultra import Ultra
 
 from threading import Timer
 
@@ -22,6 +25,7 @@ Steering.setup(pwm=pwm)
 Camera.setup(pwm=pwm)
 Led.setup()
 Led.police(1)
+Ultra.setup()
 voice_engine = pyttsx3.init()
 
 class Controller:
@@ -40,8 +44,13 @@ class Controller:
         Controller.Timers.append(timer)
 
     @staticmethod
+    def stop():
+        Motor.stop()
+        Controller._cancel_event()
+
+    @staticmethod
     def move(direction, speed, heading, duration):
-        Camera.ahead()
+        Camera.set_position(0, -5)
         Motor.move(direction, speed)
         Steering.head(heading)
         Controller._schedule_event(duration, Motor.stop)
@@ -49,7 +58,6 @@ class Controller:
 
     @staticmethod
     def moves(moves):
-        Camera.ahead()
         delay = 0
         for move in moves:
             Controller._schedule_event(delay,
@@ -84,6 +92,20 @@ class Controller:
     def get_voices():
         voices = voice_engine.getProperty('voices')
         return [{'age': v.age, 'name': v.name, 'id': v.id, 'languages': v.languages} for v in voices]
+
+    @staticmethod
+    def get_distance_map():
+        Controller.stop()
+        distance_map ={}
+        Camera.set_position(-90, -5)
+        time.sleep(0.5)
+        for a in range(-90, 91, 10):
+            Camera.set_position(a, -5)
+            time.sleep(0.2)
+            distance_map[a] = Ultra.get_distance()
+        Camera.set_position(0, 0)
+
+        return distance_map
 
     @staticmethod
     def serialize():

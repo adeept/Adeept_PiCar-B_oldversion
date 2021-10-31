@@ -98,6 +98,13 @@ class RobotViewSet(viewsets.ViewSet):
         })
 
     @action(detail=False, methods=['get'])
+    def get_distance_map(self, request):
+        return Response({
+            'status': 'OK',
+            'map': Controller.get_distance_map()
+        })
+
+    @action(detail=False, methods=['get'])
     def stream(self, request):
         return StreamingHttpResponse(Camera.stream(),
                                      content_type="multipart/x-mixed-replace;boundary=FRAME")
