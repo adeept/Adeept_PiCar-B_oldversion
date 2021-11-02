@@ -49,6 +49,11 @@ class Controller:
         Controller._cancel_event()
 
     @staticmethod
+    def emergency_stop():
+        Motor.emergency_stop()
+        Controller._cancel_event()
+
+    @staticmethod
     def move(direction, speed, heading, duration):
         Camera.set_position(0, -5)
         Motor.move(direction, speed)
