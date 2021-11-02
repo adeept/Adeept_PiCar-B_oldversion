@@ -9,7 +9,7 @@ django-rest-framework = "*"
 django-cors-headers = "*"
 fake-rpi = {version = "*",sys_platform = "== 'darwin'"}
 pyttsx3 = "*"
-rpi-gpio = {version = "*",sys_platform = "!= 'darwin'"}
+RPi.GPIO = {version = "*",sys_platform = "!= 'darwin'"}
 adafruit-pca9685 = {version = "*",sys_platform = "!= 'darwin'"}
 opencv-python =  {version = "*",sys_platform = "== 'darwin'"}
 gunicorn = "*"
