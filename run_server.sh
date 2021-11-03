@@ -5,7 +5,7 @@ BASEDIR=$(dirname "$0")
 BASEDIR=$(cd $BASEDIR; pwd)
 
 DJANGODIR=$BASEDIR/webserver            # Django project directory (*)
-SOCKFILE=$BASEDIR/gunicorn.sock         # we will communicate using this unix socket (*)
+SOCKFILE=$BASEDIR/run/gunicorn.sock     # we will communicate using this unix socket (*)
 USER=www-data                           # the user to run as (*)
 GROUP=webdata                           # the group to run as (*)
 NUM_WORKERS=1                           # how many worker processes should Gunicorn spawn (*)
