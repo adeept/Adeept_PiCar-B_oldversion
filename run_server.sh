@@ -8,7 +8,7 @@ DJANGODIR=$BASEDIR/webserver            # Django project directory (*)
 SOCKFILE=$BASEDIR/run/gunicorn.sock     # we will communicate using this unix socket (*)
 USER=www-data                           # the user to run as (*)
 GROUP=webdata                           # the group to run as (*)
-NUM_WORKERS=1                           # how many worker processes should Gunicorn spawn (*)
+NUM_WORKERS=2                           # how many worker processes should Gunicorn spawn (*)
 DJANGO_SETTINGS_MODULE=$NAME.settings   # which settings file should Django use (*)
 DJANGO_WSGI_MODULE=$NAME.wsgi           # WSGI module name (*)
 
@@ -23,6 +23,5 @@ exec /usr/bin/pipenv run gunicorn ${DJANGO_WSGI_MODULE}:application \
   --name $NAME \
   --workers $NUM_WORKERS \
   --user $USER \
-  --log-level DEBUG \
-  -k gevent \
+  -t 0 \
   --bind=unix:$SOCKFILE

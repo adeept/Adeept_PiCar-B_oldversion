@@ -4,7 +4,7 @@ Description=PiPatroller gunicorn daemon
 [Service]
 Type=simple
 User=www-data
-ExecStart=/var/www/PiPatroller/webserver/run_server.sh
+ExecStart=/var/www/PiPatroller/run_server.sh
 
 [Install]
 WantedBy=multi-user.target
