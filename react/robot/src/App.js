@@ -26,7 +26,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetch('http://robot.local:8000/robot/status/')
+    fetch('/robot/status/')
           .then(response => response.json())
           .then(data => this.updateState(data))
           .catch((error) => {
@@ -94,7 +94,7 @@ class App extends React.Component {
 
 
   saySomething (text) {
-      fetch('http://robot.local:8000/robot/say/', {
+      fetch('/robot/say/', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -112,7 +112,7 @@ class App extends React.Component {
   }
 
   setCameraPosition (pos_x, pos_y) {
-      fetch('http://robot.local:8000/robot/set_camera_position/', {
+      fetch('/robot/set_camera_position/', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -131,7 +131,7 @@ class App extends React.Component {
   }
 
   moveRobot (direction, heading) {
-      fetch('http://robot.local:8000/robot/move/', {
+      fetch('/robot/move/', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -152,7 +152,7 @@ class App extends React.Component {
   }
 
   setLedState (left_on, left_color, right_on, right_color) {
-      fetch('http://robot.local:8000/robot/set_led_state/', {
+      fetch('/robot/set_led_state/', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -258,7 +258,7 @@ class App extends React.Component {
                     </Grid>
                 </Grid>
                 <Grid item xl={6} md={6} sm={6} xs={12}>
-                    <img src="http://robot.local:8000/robot/stream/" width="480" height="360" alt="Camera Feed"/>
+                    <img src="http://robot.local/robot/stream/" width="480" height="360" alt="Camera Feed"/>
                 </Grid>
                 <Grid item xl={3} md={3} sm={3} xs={12}>
                     <p>
