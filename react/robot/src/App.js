@@ -94,7 +94,7 @@ class App extends React.Component {
 
 
   saySomething (text) {
-      fetch('http://localhost:8000/robot/say/', {
+      fetch('http://robot.local:8000/robot/say/', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
