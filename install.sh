@@ -5,7 +5,7 @@ BASEDIR=$(cd $BASEDIR; pwd)
 
 cd $BASEDIR/webserver
 /usr/bin/pipenv install
-/usr/bin/pipenv run manage.py migrate
+/usr/bin/pipenv run python manage.py migrate
 
 cd $BASEDIR/react/robot
 npm install
