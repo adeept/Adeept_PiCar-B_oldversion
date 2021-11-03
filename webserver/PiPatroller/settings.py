@@ -24,7 +24,7 @@ IS_PROD = BASE_DIR.startswith("/var/www/")
 # SECURITY WARNING: keep the secret key used in production secret!
 if IS_PROD:
     # Read secret key from file
-    with open('.secret.key') as secret_file:
+    with open(os.path.join(BASE_DIR, '.secret.key')) as secret_file:
         SECRET_KEY = secret_file.read()
 else:
     SECRET_KEY = '-dtemrq$k4-k$!33wpv=plwlk4ykj8aece#83o95c3c^@na0*)'
