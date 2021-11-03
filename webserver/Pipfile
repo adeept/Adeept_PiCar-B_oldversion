@@ -13,6 +13,7 @@ pyttsx3 = "*"
 adafruit-pca9685 = {version = "*",sys_platform = "!= 'darwin'"}
 opencv-python =  {version = "*",sys_platform = "== 'darwin'"}
 gunicorn = "*"
+picamera = {version = "*",sys_platform = "!= 'darwin'"}
 
 [dev-packages]
 
