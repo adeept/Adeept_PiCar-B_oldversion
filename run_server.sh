@@ -23,4 +23,6 @@ exec /usr/bin/pipenv run gunicorn ${DJANGO_WSGI_MODULE}:application \
   --name $NAME \
   --workers $NUM_WORKERS \
   --user $USER \
+  --log-level DEBUG \
+  -k gevent \
   --bind=unix:$SOCKFILE
