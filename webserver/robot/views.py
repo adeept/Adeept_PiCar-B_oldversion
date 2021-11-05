@@ -1,4 +1,4 @@
-from robot.serializers import MoveCommandSerializer, CameraPositionSerializer, LedStateSerializer, TextToSpeachSerializer
+from robot.serializers import MoveCommandSerializer, MoveArmCommandSerializer, CameraPositionSerializer, LedStateSerializer, TextToSpeachSerializer
 from robot.controller import Controller
 from robot.camera import Camera
 
@@ -39,6 +39,19 @@ class RobotViewSet(viewsets.ViewSet):
         serializer = MoveCommandSerializer(data=request.data, many=True)
         if serializer.is_valid():
             Controller.moves(serializer.data)
+            return Response({
+                'status': 'OK',
+                'robot': Controller.serialize()
+                })
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'])
+    def move_arm(self, request):
+        serializer = MoveArmCommandSerializer(data=request.data)
+        if serializer.is_valid():
+            Controller.move_arm(elbow_angle=serializer.data['elbow_angle'])
             return Response({
                 'status': 'OK',
                 'robot': Controller.serialize()

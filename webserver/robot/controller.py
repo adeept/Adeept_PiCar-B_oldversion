@@ -1,6 +1,7 @@
 import time
 
 import pyttsx3
+from robot.arm import Arm
 from robot.camera import Camera
 from robot.led import Led
 from robot.models import Config
@@ -23,6 +24,7 @@ pwm.set_pwm_freq(60)
 Motor.setup()
 Steering.setup(pwm=pwm)
 Camera.setup(pwm=pwm)
+Arm.setup(pwm=pwm)
 Led.setup()
 Led.police(1)
 Ultra.setup()
@@ -74,6 +76,10 @@ class Controller:
             delay += move['duration']
         Controller._schedule_event(delay, Motor.stop)
         Controller._schedule_event(delay, Steering.middle)
+
+    @staticmethod
+    def move_arm(elbow_angle):
+        Arm.lift_elbow(elbow_angle)
 
     @staticmethod
     def set_camera_position(x, y):
