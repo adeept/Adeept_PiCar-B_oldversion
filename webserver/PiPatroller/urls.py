@@ -23,5 +23,5 @@ router = DefaultRouter()
 router.register(r'robot', views.RobotViewSet, basename='user')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('robot/admin/', admin.site.urls),
 ] + router.urls
