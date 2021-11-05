@@ -15,7 +15,7 @@ class Arm:
         up = int(config.get('elbow_up', 400))
         down = int(config.get('elbow_down', 600))
         course = down - up
-        value = int(up + angle * (course / 90.0))
+        value = int(up + (90.0 - angle) * (course / 90.0))
         Arm.PWM.set_pwm(3, 0, value)
 
     @staticmethod
