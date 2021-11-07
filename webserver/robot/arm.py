@@ -21,10 +21,10 @@ class Arm:
     @staticmethod
     def move_claw(angle):
         config = Config.get_config()
-        up = int(config.get('claw_closed', 400))
-        down = int(config.get('claw_opened', 500))
-        course = down - up
-        value = int(up + (90.0 - angle) * (course / 90.0))
+        close_pos = int(config.get('claw_close', 600))
+        open_pos = int(config.get('claw_open', 300))
+        course = close_pos - open_pos
+        value = int(open_pos + (90.0 - angle) * (course / 90.0))
         Arm.PWM.set_pwm(4, 0, value)
 
     @staticmethod
