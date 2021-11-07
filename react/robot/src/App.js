@@ -1,4 +1,5 @@
 import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Grid from '@material-ui/core/Grid';
 import Slider from '@material-ui/core/Slider';
 import Switch from '@material-ui/core/Switch'
@@ -21,12 +22,18 @@ class App extends React.Component {
         right_on: false,
         right_color: 'white',
         speed: 80,
-        duration: 0.5
+        duration: 0.5,
+        elbow_angle: 90,
+        claw_angle: 90
     };
   }
 
   componentDidMount() {
-    fetch('/robot/status/')
+      let url = '/robot/status/';
+      if(process.env.REACT_APP_API_URL) {
+          url = process.env.REACT_APP_API_URL + url;
+      }
+      fetch(url)
           .then(response => response.json())
           .then(data => this.updateState(data))
           .catch((error) => {
@@ -41,7 +48,9 @@ class App extends React.Component {
         left_on: data.robot.led.state.left_on,
         left_color: data.robot.led.state.left_color,
         right_on: data.robot.led.state.right_on,
-        right_color: data.robot.led.state.right_color
+        right_color: data.robot.led.state.right_color,
+        elbow_angle: data.robot.arm.elbow_angle,
+        claw_angle: data.robot.arm.claw_angle
      });
   }
 
@@ -94,7 +103,11 @@ class App extends React.Component {
 
 
   saySomething (text) {
-      fetch('/robot/say/', {
+      let url = '/robot/say/';
+      if(process.env.REACT_APP_API_URL) {
+          url = process.env.REACT_APP_API_URL + url;
+      }
+      fetch(url, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -112,7 +125,11 @@ class App extends React.Component {
   }
 
   setCameraPosition (pos_x, pos_y) {
-      fetch('/robot/set_camera_position/', {
+      let url = '/robot/set_camera_position/';
+      if(process.env.REACT_APP_API_URL) {
+          url = process.env.REACT_APP_API_URL + url;
+      }
+      fetch(url, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -131,7 +148,11 @@ class App extends React.Component {
   }
 
   moveRobot (direction, heading) {
-      fetch('/robot/move/', {
+      let url = '/robot/move/';
+      if(process.env.REACT_APP_API_URL) {
+          url = process.env.REACT_APP_API_URL + url;
+      }
+      fetch(url, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -151,8 +172,35 @@ class App extends React.Component {
       });
   }
 
+  moveArm (elbow_angle, claw_angle) {
+      let url = '/robot/move_arm/';
+      if(process.env.REACT_APP_API_URL) {
+          url = process.env.REACT_APP_API_URL + url;
+      }
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            elbow_angle: elbow_angle,
+            claw_angle: claw_angle
+        })
+      })
+      .then(response => response.json())
+      .then(data => this.updateState(data))
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
+
   setLedState (left_on, left_color, right_on, right_color) {
-      fetch('/robot/set_led_state/', {
+      let url = '/robot/set_led_state/';
+      if(process.env.REACT_APP_API_URL) {
+          url = process.env.REACT_APP_API_URL + url;
+      }
+      fetch(url, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -258,7 +306,29 @@ class App extends React.Component {
                     </Grid>
                 </Grid>
                 <Grid item xl={6} md={6} sm={6} xs={12}>
-                    <img src="http://robot.local/robot/stream/" width="480" height="360" alt="Camera Feed"/>
+                    <Grid item xl={12} md={12} sm={12} xs={12}>
+                        <img src={(process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL : "") + "/robot/stream/"} width="480" height="360" alt="Camera Feed"/>
+                    </Grid>
+                    <Grid item xl={12} md={12} sm={12} xs={12}>
+                        <p>
+                            Claw
+                        </p>
+                        <ButtonGroup variant="contained" aria-label="outlined primary button group">
+                            <Button onClick={this.moveArm.bind(this, this.state.elbow_angle, 45)}>Open</Button>
+                            <Button onClick={this.moveArm.bind(this, this.state.elbow_angle, 0)}>Close</Button>
+                            <Button onClick={this.moveArm.bind(this, 90, 90)}>Park</Button>
+                        </ButtonGroup>
+                        <p>
+                            Elbow Angle
+                        </p>
+                        <ButtonGroup variant="contained" aria-label="outlined primary button group">
+                            <Button onClick={this.moveArm.bind(this, 0, this.state.claw_angle)}>0 (Down)</Button>
+                            <Button onClick={this.moveArm.bind(this, 30, this.state.claw_angle)}>30</Button>
+                            <Button onClick={this.moveArm.bind(this, 45, this.state.claw_angle)}>45</Button>
+                            <Button onClick={this.moveArm.bind(this, 60, this.state.claw_angle)}>60</Button>
+                            <Button onClick={this.moveArm.bind(this, 90, this.state.claw_angle)}>90 (Up)</Button>
+                        </ButtonGroup>
+                    </Grid>
                 </Grid>
                 <Grid item xl={3} md={3} sm={3} xs={12}>
                     <p>
