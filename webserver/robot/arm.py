@@ -13,7 +13,7 @@ class Arm:
 
     @staticmethod
     def move_elbow(angle):
-        Arm.arm_angle = angle
+        Arm.elbow_angle = angle
         config = Config.get_config()
         up = int(config.get('elbow_up', 400))
         down = int(config.get('elbow_down', 665))
