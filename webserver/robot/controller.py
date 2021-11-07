@@ -126,5 +126,6 @@ class Controller:
     def serialize():
         return {
             'camera': Camera.serialize(),
-            'led': Led.serialize()
+            'led': Led.serialize(),
+            'arm': Arm.serialize()
         }
