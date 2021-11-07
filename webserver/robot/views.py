@@ -25,7 +25,8 @@ class RobotViewSet(viewsets.ViewSet):
             Controller.move(serializer.data['direction'],
                             serializer.data['speed'],
                             serializer.data['heading'],
-                            serializer.data['duration'])
+                            serializer.data['duration'],
+                            serializer.data['reset_camera'])
             return Response({
                 'status': 'OK',
                 'robot': Controller.serialize()

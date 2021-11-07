@@ -6,6 +6,7 @@ class MoveCommandSerializer(serializers.Serializer):
     speed = serializers.FloatField(min_value=0.0, max_value=100.0, default=0.0)
     duration = serializers.FloatField(min_value=0.0, default=1.0)
     heading = serializers.FloatField(min_value=-90.0, max_value=90.0, default=0.0)
+    reset_camera = serializers.BooleanField(default=False)
 
 
 class MoveArmCommandSerializer(serializers.Serializer):

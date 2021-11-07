@@ -56,8 +56,9 @@ class Controller:
         Controller._cancel_event()
 
     @staticmethod
-    def move(direction, speed, heading, duration):
-        Camera.set_position(0, -5)
+    def move(direction, speed, heading, duration, reset_camera):
+        if reset_camera:
+            Camera.set_position(0, -5)
         Motor.move(direction, speed)
         Steering.head(heading)
         Controller._schedule_event(duration, Motor.stop)
