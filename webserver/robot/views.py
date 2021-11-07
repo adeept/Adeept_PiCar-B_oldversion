@@ -51,7 +51,7 @@ class RobotViewSet(viewsets.ViewSet):
     def move_arm(self, request):
         serializer = MoveArmCommandSerializer(data=request.data)
         if serializer.is_valid():
-            Controller.move_arm(elbow_angle=serializer.data['elbow_angle'])
+            Controller.move_arm(elbow_angle=serializer.data['elbow_angle'], claw_angle=serializer.data['claw_angle'])
             return Response({
                 'status': 'OK',
                 'robot': Controller.serialize()

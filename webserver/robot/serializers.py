@@ -10,6 +10,7 @@ class MoveCommandSerializer(serializers.Serializer):
 
 class MoveArmCommandSerializer(serializers.Serializer):
     elbow_angle = serializers.FloatField(min_value=0.0, max_value=90.0, default=0.0)
+    claw_angle = serializers.FloatField(min_value=0.0, max_value=90.0, default=0.0)
 
 
 class CameraPositionSerializer(serializers.Serializer):

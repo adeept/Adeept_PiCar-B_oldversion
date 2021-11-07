@@ -78,8 +78,9 @@ class Controller:
         Controller._schedule_event(delay, Steering.middle)
 
     @staticmethod
-    def move_arm(elbow_angle):
-        Arm.lift_elbow(elbow_angle)
+    def move_arm(elbow_angle, claw_angle):
+        Arm.move_elbow(elbow_angle)
+        Arm.move_claw(claw_angle)
 
     @staticmethod
     def set_camera_position(x, y):
