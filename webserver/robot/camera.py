@@ -73,8 +73,8 @@ class Camera(object):
     @staticmethod
     def _set_x(config, pos):
         center_x = int(config.get('camera_center_x', 420))
-        max_x = int(config.get('camera_max_y', 720))
-        min_x = int(config.get('camera_min_y', 120))
+        max_x = int(config.get('camera_max_x', 720))
+        min_x = int(config.get('camera_min_x', 120))
 
         course_x = max(max_x - center_x, center_x - min_x)
         pos_x = int(center_x + pos * (course_x / 90.0))
