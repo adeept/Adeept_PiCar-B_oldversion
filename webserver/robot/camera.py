@@ -4,9 +4,8 @@ import traceback
 
 from robot.models import Config
 
-if sys.platform == "darwin":  # Mac OS
-    import cv2
-else:
+import cv2
+if sys.platform != "darwin":  # Mac OS
     import picamera
 
 
