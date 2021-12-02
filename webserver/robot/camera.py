@@ -12,10 +12,11 @@ else:
 
 class CaptureDevice(object):
 
-    def __init__(self, resolution, framerate):
-        if sys.platform == "darwin":  # Mac OS
+    def __init__(self, resolution, framerate, capturing_device):
+        self.capturing_device = capturing_device
+        if self.capturing_device == "usb":  # USB Camera?
             self.device = cv2.VideoCapture(0)
-            self.device.set(cv2.CAP_PROP_FPS, framerate)
+            #self.device.set(cv2.CAP_PROP_FPS, framerate)
             res_x, res_y = resolution.split('x')
             self.device.set(3, float(res_x))
             self.device.set(4, float(res_y))
@@ -23,7 +24,7 @@ class CaptureDevice(object):
             self.device = picamera.PiCamera(resolution=resolution, framerate=framerate)
 
     def capture_continuous(self, stream, format='jpeg'):
-        if sys.platform == "darwin":  # Mac OS
+        if self.capturing_device == "usb":
             while (True):
                 ret, frame = self.device.read()
                 rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
@@ -38,7 +39,7 @@ class CaptureDevice(object):
                 yield frame.getvalue()
 
     def close(self):
-        if sys.platform == "darwin":  # Mac OS
+        if self.capturing_device == "usb":
             self.device.release()
         else:
             self.device.close()
@@ -96,7 +97,11 @@ class Camera(object):
 
     @staticmethod
     def stream():
-        capture_device = CaptureDevice(resolution='640x480', framerate=7)
+        if sys.platform == "darwin":
+            capturing_device = "usb"
+        else:
+            capturing_device = Config.get('capturing_device', 'picamera')
+        capture_device = CaptureDevice(resolution='1280x720', framerate=7, capturing_device=capturing_device)
         stream = io.BytesIO()
         try:
             Camera.streaming = True

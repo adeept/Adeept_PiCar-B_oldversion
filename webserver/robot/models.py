@@ -8,12 +8,12 @@ class Config(models.Model):
     value = models.CharField(max_length=512)
 
     @staticmethod
-    def get(key):
+    def get(key, default=None):
         try:
             o = Config.objects.get(key=key)
             return o.value
         except:
-            return None
+            return default
 
     @staticmethod
     def get_config():
