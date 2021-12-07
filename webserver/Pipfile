@@ -11,7 +11,7 @@ fake-rpi = {version = "*",sys_platform = "== 'darwin'"}
 pyttsx3 = "*"
 "rpi.gpio" = {version = "*",sys_platform = "!= 'darwin'"}
 adafruit-pca9685 = {version = "*",sys_platform = "!= 'darwin'"}
-opencv-python =  "*"
+opencv-python-headless =  "4.5.3.56"
 gunicorn = "*"
 picamera = {version = "*",sys_platform = "!= 'darwin'"}
 

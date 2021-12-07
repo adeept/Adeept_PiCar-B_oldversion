@@ -19,7 +19,7 @@ cd $DJANGODIR
 
 # Start your Django Unicorn
 # Programs meant to be run under supervisor should not daemonize themselves (do not use --daemon)
-exec /usr/bin/pipenv run gunicorn ${DJANGO_WSGI_MODULE}:application \
+exec /usr/local/bin/pipenv run gunicorn ${DJANGO_WSGI_MODULE}:application \
   --name $NAME \
   --workers $NUM_WORKERS \
   --user $USER \

@@ -13,6 +13,7 @@ class CaptureDevice(object):
 
     def __init__(self, resolution, framerate, capturing_device):
         self.capturing_device = capturing_device
+        self.framerate = framerate
         if self.capturing_device == "usb":  # USB Camera?
             self.device = cv2.VideoCapture(0)
             #self.device.set(cv2.CAP_PROP_FPS, framerate)
@@ -29,7 +30,7 @@ class CaptureDevice(object):
                 rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
 
                 yield cv2.imencode('.jpg', rgb)[1].tostring()
-                if cv2.waitKey(1) & 0xFF == ord('q'):
+                if cv2.waitKey(1000 // self.framerate) & 0xFF == ord('q'):
                     break
         else:
             for frame in self.device.capture_continuous(stream,
@@ -96,11 +97,16 @@ class Camera(object):
 
     @staticmethod
     def stream():
+        config = Config.get_config()
         if sys.platform == "darwin":
             capturing_device = "usb"
+            resolution = '1280x720'
         else:
-            capturing_device = Config.get('capturing_device', 'picamera')
-        capture_device = CaptureDevice(resolution='1280x720', framerate=7, capturing_device=capturing_device)
+            capturing_device = config.get('capturing_device', 'picamera')
+            resolution = config.get('capturing_resolution', '1280x720')
+        capture_device = CaptureDevice(resolution=resolution,
+                                       framerate=config.get('capturing_framerate', 7),
+                                       capturing_device=capturing_device)
         stream = io.BytesIO()
         try:
             Camera.streaming = True
