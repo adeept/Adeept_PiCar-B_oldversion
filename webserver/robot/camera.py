@@ -105,7 +105,7 @@ class Camera(object):
             capturing_device = config.get('capturing_device', 'picamera')
             resolution = config.get('capturing_resolution', '1280x720')
         capture_device = CaptureDevice(resolution=resolution,
-                                       framerate=config.get('capturing_framerate', 7),
+                                       framerate=int(config.get('capturing_framerate', 7)),
                                        capturing_device=capturing_device)
         stream = io.BytesIO()
         try:
